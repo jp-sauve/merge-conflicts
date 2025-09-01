@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# Dev db
+./citd.db
+
 # testing
 /coverage
 

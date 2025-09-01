@@ -68,7 +68,7 @@ export default function AdminUsersPage() {
           <ul className="space-y-4">
             {users.map((user) => (
               <li key={user.id} className="p-4 border border-gray-200 rounded-md">
-                <h3 className="text-xl font-bold">{user.username}</h3>
+                <h3 className="text-xl font-bold">{user.id}: {user.username}</h3>
                 <p className="text-gray-700">Role: {user.role}</p>
               </li>
             ))}

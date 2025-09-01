@@ -1,12 +1,12 @@
 
 import sqlite3 from 'sqlite3';
 
-const db = new sqlite3.Database('citd.db', (err) => {
+const db = new sqlite3.Database('citd.db', async (err) => {
   if (err) {
     console.error('Error opening database', err.message);
   } else {
     console.log('Connected to the SQLite database.');
-    createTables();
+    await createTables();
   }
 });
 
@@ -22,6 +22,7 @@ const createTables = () => {
     `CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       username TEXT UNIQUE,
+      email TEXT UNIQUE,
       password_hash TEXT,
       role TEXT CHECK(role IN ('admin','user'))
     )`,
@@ -35,13 +36,18 @@ const createTables = () => {
     )`
   ];
 
-  tables.forEach((table) => {
-    db.run(table, (err) => {
-      if (err) {
-        console.error('Error creating table', err.message);
-      }
+  return Promise.all(tables.map(table => {
+    return new Promise<void>((resolve, reject) => {
+      db.run(table, (err) => {
+        if (err) {
+          console.error('Error creating table', err.message);
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
     });
-  });
+  }));
 };
 
 export const runQuery = (query: string, params: any[] = []) => {
